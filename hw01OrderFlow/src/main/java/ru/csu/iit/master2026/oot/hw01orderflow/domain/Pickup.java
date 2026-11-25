@@ -12,4 +12,6 @@ public record Pickup() implements DeliveryTariff {
     public int days() {
         return 0;
     }
+
+    // Не переопределил методы так как используется версия по умолчанию
 }

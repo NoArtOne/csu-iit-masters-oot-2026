@@ -1,7 +1,6 @@
 package ru.csu.iit.master2026.oot.hw01orderflow.infra;
 
 import ru.csu.iit.master2026.oot.hw01orderflow.app.Notifier;
-import ru.csu.iit.master2026.oot.hw01orderflow.domain.ExpressDelivery;
 import ru.csu.iit.master2026.oot.hw01orderflow.domain.Money;
 import ru.csu.iit.master2026.oot.hw01orderflow.domain.Order;
 
@@ -12,11 +11,9 @@ public final class ConsoleNotifier implements Notifier {
 
     @Override
     public void orderPlaced(Order order) {
-        String text = order.customer().name() + ", заказ " + order.id()
-                + " принят. Сумма: " + order.total();
-        if (order.delivery() instanceof ExpressDelivery) {
-            text += " Экспресс-доставка: привезём завтра.";
-        }
+        // Добавил в конце пробел чтобы был отступ перед добавлением deliveryPromise
+        String text = order.customer().name() + ", заказ " + order.id() + " принят. Сумма: " + order.total() + " ";
+        text += order.delivery().deliveryPromise();
         smsOrEmail(order, text);
     }
 

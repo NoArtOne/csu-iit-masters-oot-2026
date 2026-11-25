@@ -15,4 +15,6 @@ public record CourierDelivery() implements DeliveryTariff {
     public int days() {
         return 3;
     }
+
+    // Не переопределил методы так как используется версия по умолчанию
 }
