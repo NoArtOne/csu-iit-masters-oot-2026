@@ -62,4 +62,46 @@ class SalesReportTest {
         assertThat(rendered).contains("Заказов: 3, экспресс: 2");
     }
 
+    @Test
+    void один_скелет_yaml() {
+        PlaceOrder placeOrder = new PlaceOrder(repository, new RecordingNotifier());
+        Order shipped = placeOrder.place(Order.builder()
+                .customer(anna)
+                .item("Блокнот", 1, rubles(400))
+                .delivery(new CourierDelivery()));
+        shipped.pay();
+        shipped.ship();
+
+        assertThat(new YamlSalesReport(repository).render()).isEqualTo("""
+                orders:
+                  - id: ORD-1
+                    status: PAID
+                    totalKopecks: 6549000
+                  - id: ORD-2
+                    status: NEW
+                    totalKopecks: 65000
+                  - id: ORD-3
+                    status: SHIPPED
+                    totalKopecks: 70000
+                count: 3
+                express: 1
+                revenueKopecks: 6619000
+                largest: ORD-1
+                """);
+    }
+
+
+    @Test
+    void yaml_пустое_хранилище() {
+        InMemoryOrderRepository emptyRepo = new InMemoryOrderRepository();
+        assertThat(new YamlSalesReport(emptyRepo).render()).isEqualTo("""
+            orders: []
+            count: 0
+            express: 0
+            revenueKopecks: 0
+            largest: null
+            """);
+    }
+
+
 }
