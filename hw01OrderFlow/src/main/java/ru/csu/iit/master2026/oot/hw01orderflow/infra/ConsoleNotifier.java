@@ -38,7 +38,7 @@ public final class ConsoleNotifier implements Notifier {
         if (order.total().compareTo(SMS_FROM) > 0) {
             System.out.println("[SMS " + order.customer().phone() + "] " + text);
         } else {
-            email(order, text);
+            email(order, text.trim());
         }
     }
 

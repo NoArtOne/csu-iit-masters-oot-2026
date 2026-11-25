@@ -120,6 +120,8 @@ public final class Order implements Iterable<OrderItem> {
         status = status.cancel();
     }
 
+    public void returnOrder() { status = status.returnOrder(); }
+
     public OrderId id() {
         return id;
     }
