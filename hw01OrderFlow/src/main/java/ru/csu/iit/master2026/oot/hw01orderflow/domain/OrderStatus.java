@@ -3,7 +3,7 @@ package ru.csu.iit.master2026.oot.hw01orderflow.domain;
 /**
  * Статус заказа. Паттерн «Состояние»: каждый статус сам знает, куда из него можно перейти.
  *
- * <p>Переходы: NEW → PAID → SHIPPED; NEW и PAID → CANCELLED. Остальное — исключение.
+ * <p>Переходы: NEW → PAID → SHIPPED; SHIPPED → RETURNED; NEW и PAID → CANCELLED. Остальное — исключение.
  */
 public enum OrderStatus {
 
@@ -41,8 +41,12 @@ public enum OrderStatus {
         public boolean paid() {
             return true;
         }
+
+        @Override
+        OrderStatus returnOrder() { return RETURNED;}
     },
 
+    RETURNED,
     CANCELLED;
 
     /** Переходы по умолчанию запрещены: статус разрешает только свои. */
@@ -57,6 +61,8 @@ public enum OrderStatus {
     OrderStatus cancel() {
         throw forbidden("отменить");
     }
+
+    OrderStatus returnOrder() { throw forbidden("вернуть"); }
 
     /** Деньги за заказ получены. */
     public boolean paid() {
