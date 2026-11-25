@@ -4,16 +4,14 @@ import ru.csu.iit.master2026.oot.hw01orderflow.app.Notifier;
 import ru.csu.iit.master2026.oot.hw01orderflow.domain.Money;
 import ru.csu.iit.master2026.oot.hw01orderflow.domain.Order;
 
-/** Правила поддержки из legacy: тексты сообщений; крупные заказы — по SMS, остальные — письмом. */
 public final class ConsoleNotifier implements Notifier {
 
     private static final Money SMS_FROM = Money.rubles(10_000);
 
     @Override
     public void orderPlaced(Order order) {
-        // Добавил в конце пробел чтобы был отступ перед добавлением deliveryPromise
         String text = order.customer().name() + ", заказ " + order.id() + " принят. Сумма: " + order.total() + " ";
-        text += order.delivery().deliveryPromise();
+        text += order.delivery().deliveryPromise().orElse("");
         smsOrEmail(order, text);
     }
 

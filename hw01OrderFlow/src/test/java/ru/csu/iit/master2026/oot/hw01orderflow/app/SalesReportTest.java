@@ -1,13 +1,9 @@
 package ru.csu.iit.master2026.oot.hw01orderflow.app;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import ru.csu.iit.master2026.oot.hw01orderflow.domain.CourierDelivery;
-import ru.csu.iit.master2026.oot.hw01orderflow.domain.Customer;
-import ru.csu.iit.master2026.oot.hw01orderflow.domain.CustomerId;
-import ru.csu.iit.master2026.oot.hw01orderflow.domain.Email;
-import ru.csu.iit.master2026.oot.hw01orderflow.domain.ExpressDelivery;
-import ru.csu.iit.master2026.oot.hw01orderflow.domain.Order;
+import ru.csu.iit.master2026.oot.hw01orderflow.domain.*;
 import ru.csu.iit.master2026.oot.hw01orderflow.infra.InMemoryOrderRepository;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -16,10 +12,11 @@ import static ru.csu.iit.master2026.oot.hw01orderflow.domain.Money.rubles;
 class SalesReportTest {
 
     private final InMemoryOrderRepository repository = new InMemoryOrderRepository();
+    private Customer anna;
 
     @BeforeEach
     void twoOrders() {
-        Customer anna = new Customer(new CustomerId("c-1"), "Анна",
+        anna = new Customer(new CustomerId("c-1"), "Анна",
                 new Email("anna@example.ru"), "+79000000001");
         PlaceOrder placeOrder = new PlaceOrder(repository, new RecordingNotifier());
         Order paid = placeOrder.place(Order.builder()
@@ -50,4 +47,19 @@ class SalesReportTest {
                 TOTAL;2;6549000
                 """);
     }
+
+    @Test
+    @DisplayName("Отчёт должен считать экспрессом и ExpressDelivery, и SameDayDelivery")
+    void reportCountsBothExpressTariffs() {
+        PlaceOrder placeOrder = new PlaceOrder(repository, new RecordingNotifier());
+        placeOrder.place(Order.builder()
+                .customer(anna)
+                .item("Флешка", 1, rubles(1000))
+                .delivery(new SameDayDelivery()));
+
+        String rendered = new TextSalesReport(repository).render();
+        System.out.println(rendered);
+        assertThat(rendered).contains("Заказов: 3, экспресс: 2");
+    }
+
 }
