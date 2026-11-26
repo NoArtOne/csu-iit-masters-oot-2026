@@ -1,13 +1,11 @@
 package ru.csu.iit.master2026.oot.hw01bank;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-/** Примеры, с которых можно начать. Уберите {@code @Disabled}, когда появится реализация, и допишите свои тесты. */
-@Disabled("Снимите, когда реализуете Amount, Account, команды и Ledger")
+/** Примеры базовых сценариев: перевод с отменой, дебетовый и кредитный счёт. */
 class BankExampleTest {
 
     private final Account anna = Account.debit(new AccountId("40817-001"));
@@ -23,7 +21,8 @@ class BankExampleTest {
         assertThat(boris.balance()).isEqualTo(20_000);
 
         ledger.undoLast();
-
+        // Своя проверка что есть ещё операция пополнения для отмены
+        assertThat(ledger.size()).isEqualTo(1);
         assertThat(anna.balance()).isEqualTo(50_000);
         assertThat(boris.balance()).isZero();
     }

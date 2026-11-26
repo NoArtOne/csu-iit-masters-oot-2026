@@ -1,19 +1,28 @@
 package ru.csu.iit.master2026.oot.hw01bank;
 
+import java.util.Objects;
+
 /** Пополнение счёта. Отмена снимает те же деньги — если они ещё на счёте. */
 public final class Deposit implements Command {
 
+    private final Account account;
+    private final Amount amount;
+
     public Deposit(Account account, Amount amount) {
-        throw new UnsupportedOperationException("TODO");
+        this.account = Objects.requireNonNull(account);
+        this.amount = Objects.requireNonNull(amount);
     }
 
     @Override
     public void execute() {
-        throw new UnsupportedOperationException("TODO");
+        account.deposit(amount);
     }
 
     @Override
     public void undo() {
-        throw new UnsupportedOperationException("TODO");
+        if (account.balance() < amount.kopecks()) {
+            throw new IllegalStateException("На счёте нет денег для отмены пополнения");
+        }
+        account.withdraw(amount);
     }
 }
